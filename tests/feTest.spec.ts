@@ -1,23 +1,20 @@
-/*
-Povoleni exekuce .sh scriptu
- 
-chmod u+x *.sh
-
-
-
 import { test } from '@playwright/test'
+import { LoginPage } from '../src/pom/loginClass'
+import dotenv from 'dotenv'
+import { TestConfig, TestSecrets } from '../src/types/globalTypes'
 
-test("Sample Frontend", async({ page }) =>{
-    await page.goto("https://www.seznam.cz")
-})
+dotenv.config({ override: true })
 
-*/
+const env = process.env.ENV || 'dev'
+const testConfig: TestConfig = require(`../data/envs/config_${env}.json`)
 
-import { test } from '@playwright/test'
-import { LoginPage } from '../src/pom/feClass'
- 
+const testSecrets: TestSecrets = {
+    username: process.env.UNAME,
+    password: process.env.PWORD
+}
+
 test("Sample Frontend", async({ page }) => {
-    const loginPage = new LoginPage(page, test)
-    
-    await page.goto("https://www.seznam.cz")
+    const loginPage = new LoginPage(page, test, testConfig, testSecrets)
+
+    await loginPage.openHomepage()
 })
